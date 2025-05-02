@@ -7,6 +7,7 @@ import ManagerItems from "./pages/ManagerItems/ManagerItems";
 import ManagerCategory from "./pages/ManagerCategory/ManagerCategory";
 import ManagerUser from "./pages/ManagerUser/ManagerUser";
 import Dashboard from "./pages/Dashboard/Dashboard";
+import {Toaster} from "react-hot-toast";
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
   return (
     <main className="">
     <Navbar />
+    <Toaster />
     <div >
       <Routes>
         <Route path="/" element={<Dashboard />} />

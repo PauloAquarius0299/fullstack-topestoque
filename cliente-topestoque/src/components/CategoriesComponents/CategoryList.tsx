@@ -1,13 +1,53 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AppContext } from "../../context/AppContext";
+import { CiSearch } from "react-icons/ci";
+import { deleteCategories } from "../../state/CategoryService";
+import toast from "react-hot-toast";
 
 const CategoryList = () => {
-  const { categories } = useContext(AppContext);
+  const { categories, setCategories } = useContext(AppContext);
+  const [ searchTerm, setSearchTerm ] = useState("");
+
+  const filteredCategories = categories.filter(category => 
+    category.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const deleteByCategoryId = async (categoryId: string) => {
+    try {
+      const res = await deleteCategories(categoryId);
+      if(res.status === 204) {
+        const updateCategories = categories.filter(category => category.categoryId !== categoryId);
+        setCategories(updateCategories);
+        toast.success("Categoria removida com sucesso!");
+      } else {
+        toast.error("Inviavel deletar essa categoria");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Erro ao remover categoria");
+    }
+  }
 
   return (
-    <div className="h-full overflow-y-auto p-4">
+    <div className="h-full overflow-y-auto ">
+      <div className="mb-4">
+  <div className="flex items-center gap-2 w-full">
+    <input
+      type="text"
+      name="keyword"
+      id="keyword"
+      placeholder="Pesquise por categorias..."
+      onChange={(e) => setSearchTerm(e.target.value)}
+      className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+    <span className="p-2 bg-blue-400 cursor-pointer hover:bg-blue-200 text-white rounded-md">
+    <CiSearch />
+    </span>
+  </div>
+</div>
+
     <div className="product-grid">
-      {categories.map((category, index) => (
+      {filteredCategories.map((category, index) => (
         <div key={index} className="product-card relative">
           <div
             className="flex items-center gap-4 p-4 rounded-lg"
@@ -22,13 +62,12 @@ const CategoryList = () => {
               <h2 className="text-base font-semibold text-gray-900 capitalize">
                 {category.name}
               </h2>
-              <p className="text-sm text-gray-700">{category.description}</p>
+              <p>Items: 5</p>
             </div>
-
-            {/* Ícone de deletar dentro do card, no topo direito */}
             <button
               title="Remover"
-              className="absolute top-2 right-2 text-red-600 hover:text-red-400 transition-colors"
+              onClick={() => deleteByCategoryId(category.categoryId)}
+              className="absolute cursor-pointer top-2 right-2 text-red-600 hover:text-red-400 transition-colors"
             >
               <svg
                 className="w-5 h-5"

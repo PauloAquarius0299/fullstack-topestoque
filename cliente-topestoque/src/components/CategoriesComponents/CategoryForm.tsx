@@ -1,11 +1,75 @@
-import upload from '../../assets/upload.png';
+import { useContext, useEffect, useState } from 'react';
+import { CategoryResponse, ChangeEvent } from '../../types';
+import type { FormData } from '../../types';
+import toast from 'react-hot-toast';
+import { addCategory } from '../../state/CategoryService';
+import { AppContext } from '../../context/AppContext';
 
 const CategoryForm = () => {
+
+  const {categories, setCategories} = useContext(AppContext);
+  const [loading, setLoading] = useState(false);
+  const [image, setImage] = useState<File | null>(null);
+  const [data, setData] = useState({
+    name: "",
+    description: "",
+    bgColor: "#95a3bb",
+  });
+
+  useEffect(() => {
+    console.log(data)
+  }, [data]);
+
+  
+  const onChangeHandler = (e: ChangeEvent) => {
+    const value = e.target.value;
+    const name = e.target.name;
+    setData((data: FormData) => ({ ...data, [name]: value }));
+  };
+
+  const imageEmoji = image ? "✅" : "🔗";
+
+  const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+    e.preventDefault();
+    setLoading(true);
+    if (!image) {
+      toast.error('Selecione a imagem da categoria');
+      return;
+    }
+    const formData = new FormData();
+    formData.append("category", JSON.stringify(data));
+    formData.append("file", image);
+    try {
+      const res: CategoryResponse = await addCategory(formData);
+      if (res.status === 201) {
+        setCategories([...categories, { 
+          ...res.data, 
+          categoryId: res.data.id, 
+          createdAt: new Date(), 
+          updatedAt: new Date(),
+          imageUrl: URL.createObjectURL(image) 
+        }]);
+        toast.success("Categoria criada com sucesso!");
+        setData({
+          name: '',
+          description: '',
+          bgColor: '#95a3bb',
+        });
+        setImage(null);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Erro ao criar categoria');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="p-4 md:p-8 w-full max-w-2xl mx-auto gap-4">
       <div className="flex flex-col gap-8">
         <div className="w-full bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-65 md:p-8">
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={onSubmitHandler} >
             {/* Upload de Imagem */}
             <div className="flex flex-col sm:flex-row items-center gap-6 mb-6">
               <label 
@@ -13,24 +77,20 @@ const CategoryForm = () => {
                 className="cursor-pointer flex flex-col items-center gap-2 group"
               >
                 <div className="p-4 rounded-lg group-hover:border-blue-500 transition-colors duration-200">
-                  <img 
-                    src={upload} 
-                    alt="Ícone de upload" 
-                    width={48} 
-                    className="rounded-md opacity-70 group-hover:opacity-100 transition-opacity duration-200" 
-                  />
-                </div>
-                <span className="text-sm text-gray-500 group-hover:text-blue-600 transition-colors duration-200">
-                  Clique para selecionar imagem
-                </span>
-              </label>
-              <input 
+                {imageEmoji}
+                <input 
                 type="file" 
                 name="image" 
                 id="image" 
                 accept="image/*" 
                 className="hidden" 
-              />
+                onChange={(e) => setImage(e.target.files?.[0] || null)} 
+                />
+                </div>
+                <span className="text-sm text-gray-500 group-hover:text-blue-600 transition-colors duration-200">
+                {image ? "Imagem selecionada" : "Clique para selecionar imagem"}
+                </span>
+              </label>
             </div>
 
             {/* Nome da categoria */}
@@ -44,6 +104,8 @@ const CategoryForm = () => {
                 id="name"
                 placeholder="Ex: Eletrônicos, Moda, Decoração..."
                 className="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                onChange={onChangeHandler}
+                value={data.name}
               />
             </div>
 
@@ -57,6 +119,8 @@ const CategoryForm = () => {
                 name="description"
                 id="description"
                 placeholder="Forneça uma descrição detalhada desta categoria..."
+                onChange={onChangeHandler}
+                value={data.description}
                 className="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 min-h-[120px]"
               ></textarea>
             </div>
@@ -71,7 +135,9 @@ const CategoryForm = () => {
                   type="color"
                   name="bgColor"
                   id="bgColor"
-                  defaultValue="#07224d" // Cor azul padrão
+                  onChange={onChangeHandler}
+                  value={data.bgColor}
+                  defaultValue="#95a3bb" // Cor azul padrão
                   className="w-12 h-12 p-1 border border-gray-300 rounded-md cursor-pointer hover:ring-2 hover:ring-gray-200 transition-all duration-200"
                 />
                 <span className="text-sm text-gray-500">
@@ -84,9 +150,11 @@ const CategoryForm = () => {
             <div className="pt-8">
               <button 
                 type="submit" 
+                disabled={loading}
+
                 className="w-full button-primary mt-8"
               >
-                Salvar Categoria
+                {loading ? "loading..." : "Salvar Categoria"}
               </button>
             </div>
           </form>

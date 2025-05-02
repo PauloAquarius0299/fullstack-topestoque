@@ -30,10 +30,9 @@ const Dashboard = () => {
               Lista de Categorias
             </h2>
             <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
-              {/* Número dinâmico de categorias pode ser adicionado aqui */}
             </span>
           </div>
-          <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm flex-1 overflow-y-auto">
+          <div className="flex flex-1 overflow-y-auto">
             <CategoryList />
           </div>
         </div>
