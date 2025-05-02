@@ -12,7 +12,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 function App() {
 
   return (
-    <main className="min-h-screen flex flex-col">
+    <main className="">
     <Navbar />
     <div >
       <Routes>

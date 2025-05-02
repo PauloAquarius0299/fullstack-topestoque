@@ -2,9 +2,9 @@ import upload from '../../assets/upload.png';
 
 const CategoryForm = () => {
   return (
-    <div className="p-4 md:p-8 w-full max-w-2xl mx-auto">
-      <div className="flex flex-col gap-6">
-        <div className="w-full bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-6 md:p-8">
+    <div className="p-4 md:p-8 w-full max-w-2xl mx-auto gap-4">
+      <div className="flex flex-col gap-8">
+        <div className="w-full bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-65 md:p-8">
           <form className="space-y-6">
             {/* Upload de Imagem */}
             <div className="flex flex-col sm:flex-row items-center gap-6 mb-6">
@@ -12,7 +12,7 @@ const CategoryForm = () => {
                 htmlFor="image" 
                 className="cursor-pointer flex flex-col items-center gap-2 group"
               >
-                <div className="p-4 border-2 border-dashed border-gray-300 rounded-lg group-hover:border-blue-500 transition-colors duration-200">
+                <div className="p-4 rounded-lg group-hover:border-blue-500 transition-colors duration-200">
                   <img 
                     src={upload} 
                     alt="Ícone de upload" 
