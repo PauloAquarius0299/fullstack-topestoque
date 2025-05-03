@@ -3,7 +3,9 @@ package com.paulotech.servidor_topestoque.service.topestoque.service.impl;
 import com.paulotech.servidor_topestoque.entity.CategoryEntity;
 import com.paulotech.servidor_topestoque.io.CategoryRequest;
 import com.paulotech.servidor_topestoque.io.CategoryResponse;
+import com.paulotech.servidor_topestoque.io.ItemResponse;
 import com.paulotech.servidor_topestoque.repository.CategoryRepository;
+import com.paulotech.servidor_topestoque.repository.ItemRepository;
 import com.paulotech.servidor_topestoque.service.CategoryService;
 import com.paulotech.servidor_topestoque.service.FileUploadService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final FileUploadService fileUploadService;
+    private final ItemRepository itemRepository;
 
     @Override
     public CategoryResponse add(CategoryRequest request, MultipartFile file) {
@@ -47,6 +50,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     private CategoryResponse covertToResponse(CategoryEntity newCategory){
+        Integer itemsCount = itemRepository.countByCategoryId(newCategory.getId());
         return CategoryResponse.builder()
                 .categoryId(newCategory.getCategoryId())
                 .name(newCategory.getName())
@@ -55,6 +59,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .createdAt(newCategory.getCreatedAt())
                 .updatedAt(newCategory.getUpdatedAt())
                 .imageUrl(newCategory.getImageUrl())
+                .items(itemsCount)
                 .build();
     }
 
