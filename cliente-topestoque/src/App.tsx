@@ -8,16 +8,17 @@ import ManagerCategory from "./pages/ManagerCategory/ManagerCategory";
 import ManagerUser from "./pages/ManagerUser/ManagerUser";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import {Toaster} from "react-hot-toast";
-
+import Login from "./pages/AuthPage/Login";
 
 function App() {
 
   return (
-    <main className="">
-    <Navbar />
+    <main>
+      {location.pathname !== "/login" && <Navbar />}
     <Toaster />
     <div >
       <Routes>
+        <Route path="/login" element={<Login />} />
         <Route path="/" element={<Dashboard />} />
         <Route path="/manage-users" element={<ManagerUser />} />
         <Route path="/manage-categories" element={<ManagerCategory />} />

@@ -30,3 +30,15 @@ export interface ChangeEvent {
     description: string;
     bgColor: string;
 }
+
+// types/auth.ts
+export interface LoginData {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  token: string;
+  role: string;
+  // Adicione outros campos que sua API retorna
+}
