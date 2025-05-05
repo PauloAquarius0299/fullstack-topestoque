@@ -25,20 +25,19 @@ export interface ChangeEvent {
     };
   }
 
-  export   interface FormData {
+  export type CategoryFormData = {
     name: string;
     description: string;
     bgColor: string;
-}
-
+  };
 // types/auth.ts
 export interface LoginData {
-  email: string;
-  password: string;
+  email: "";
+  password: "";
 }
 
 export interface LoginResponse {
-  token: string;
-  role: string;
+  token: "";
+  role: "";
   // Adicione outros campos que sua API retorna
 }

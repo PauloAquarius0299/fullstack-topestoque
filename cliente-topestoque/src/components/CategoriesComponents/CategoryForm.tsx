@@ -1,13 +1,17 @@
 import { useContext, useEffect, useState } from 'react';
-import { CategoryResponse, ChangeEvent } from '../../types';
-import type { FormData } from '../../types';
+import { CategoryFormData, CategoryResponse, ChangeEvent } from '../../types';
 import toast from 'react-hot-toast';
 import { addCategory } from '../../state/CategoryService';
 import { AppContext } from '../../context/AppContext';
 
 const CategoryForm = () => {
 
-  const {categories, setCategories} = useContext(AppContext);
+  const context = useContext(AppContext);
+    if (!context) {
+      throw new Error("AppContext is not available");
+    }
+  
+  const { categories, setCategories } = context;
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState<File | null>(null);
   const [data, setData] = useState({
@@ -20,11 +24,10 @@ const CategoryForm = () => {
     console.log(data)
   }, [data]);
 
-  
   const onChangeHandler = (e: ChangeEvent) => {
     const value = e.target.value;
     const name = e.target.name;
-    setData((data: FormData) => ({ ...data, [name]: value }));
+    setData((data: CategoryFormData) => ({ ...data, [name]: value }));
   };
 
   const imageEmoji = image ? "✅" : "🔗";
@@ -53,7 +56,7 @@ const CategoryForm = () => {
         setData({
           name: '',
           description: '',
-          bgColor: '#95a3bb',
+          bgColor: '',
         });
         setImage(null);
       }
@@ -137,7 +140,6 @@ const CategoryForm = () => {
                   id="bgColor"
                   onChange={onChangeHandler}
                   value={data.bgColor}
-                  defaultValue="#95a3bb" // Cor azul padrão
                   className="w-12 h-12 p-1 border border-gray-300 rounded-md cursor-pointer hover:ring-2 hover:ring-gray-200 transition-all duration-200"
                 />
                 <span className="text-sm text-gray-500">

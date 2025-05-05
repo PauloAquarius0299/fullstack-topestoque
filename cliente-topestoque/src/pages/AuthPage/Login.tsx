@@ -1,17 +1,24 @@
-// components/Login.tsx
 import { JSX, useContext, useState, ChangeEvent, FormEvent } from "react";
 import toast from "react-hot-toast";
 import { login } from "../../state/AuthService";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../context/AppContext";
+import { LoginData } from "../../types";
 
 function Login(): JSX.Element {
-  const { setAuthData } = useContext(AppContext);
+  const context = useContext(AppContext);
+
+  // Garantir que o contexto não seja undefined
+  if (!context) {
+    throw new Error("AppContext deve ser usado dentro de AppContextProvider");
+  }
+
+  const { setAuthData } = context;
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState({
-    email: "",
-    password: "",
+  const [data, setData] = useState<LoginData>({
+    email: "" as LoginData["email"],
+    password: "" as LoginData["password"],
   });
 
   const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -23,7 +30,7 @@ function Login(): JSX.Element {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await login(data);
+      const response = await login(data); 
       toast.success("Login realizado com sucesso!");
       localStorage.setItem("token", response.token);
       localStorage.setItem("role", response.role);
@@ -36,6 +43,7 @@ function Login(): JSX.Element {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="login-background bg-transparent flex items-center justify-center min-h-screen">
