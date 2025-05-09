@@ -39,5 +39,10 @@ export interface LoginData {
 export interface LoginResponse {
   token: "";
   role: "";
-  // Adicione outros campos que sua API retorna
 }
+
+export interface User {
+  userId: string;
+  name: string;
+  email: string;
+};
